@@ -28,6 +28,40 @@
   color: #61dafb;
 }
 
+/*
+CSS relating to the grid and tiles.
+*/
+
+.grid-1 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2%;
+  /* margin: auto; */
+  /* grid-template-columns: 30% 30% 30%; */
+  /* grid-template-rows: auto auto auto;
+  grid-gap: 16px; */
+}
+
+.grid-container {
+  padding: 3%;
+}
+
+.tile {
+  aspect-ratio: 1/ 1;
+  display: flex;
+  align-items: center;
+  padding: 5%;
+  background: #33a8a5;
+  justify-content: center;  
+  border-radius: 10px;
+  opacity: 0.7;  color: #fff;
+}
+
+.tile:hover {
+  opacity: 1.0;
+}
+
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
