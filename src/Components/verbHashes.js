@@ -1,5 +1,13 @@
 import React from 'react';
 
+export function getVerbArrayFromTenseName(tense) {
+    const tenseToVerbArrayMap = new Map([
+        ["present", ["essen", "trinken", "gehen", "sehen", "kommen", "machen", "fahren", "arbeiten", "lesen", "sprechen"]]
+    ]);
+
+    return tenseToVerbArrayMap.get(tense);
+}
+
 // Remember to feed this just the value, not the object. 
 export default function verbHashes(tense) {
     const presentTense = {

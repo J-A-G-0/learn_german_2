@@ -42,15 +42,20 @@ function Tile({ title = "Title not set", onClick }) {
 export default function TileGrid() {
     // State to control modal visibility
     const [openModal, setOpenModal] = useState(false);
+    // State to store the title of the clicked tile
+    const [modalTitle, setModalTitle] = useState("");  
 
     // Handle opening the modal
-    const handleOpenModal = () => {
+    const handleOpenModal = (title) => {
+        if (openModal) return; // If modal is already open, don't re-open it
+        setModalTitle(title);  // Set the clicked tile's title
         setOpenModal(true);
     };
 
     // Handle closing the modal
     const handleCloseModal = () => {
         setOpenModal(false);
+        setModalTitle("");   // Optionally reset the title when modal closes (clear previous state)
     };
 
     // Array of tile titles
@@ -64,11 +69,11 @@ export default function TileGrid() {
         <section className="grid-1">
             {/* Dynamically render tiles */}
             {tileTitles.map((title, index) => (
-                <Tile key={index} title={title} onClick={handleOpenModal} />
+                <Tile key={index} title={title} onClick={() => handleOpenModal(title)} /> // Pass the title of the clicked tile
             ))}
 
             {/* Conditionally render the modal */}
-            {openModal && <Modal onClose={handleCloseModal} />}
+            {openModal && <Modal title={modalTitle} onClose={handleCloseModal} />}
         </section>
     );
 }

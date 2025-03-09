@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import './Modal.css';
 import verbHashes from './verbHashes';
+import { getVerbArrayFromTenseName } from './verbHashes';
 
-function Modal() {
+function Modal( {title} ) {
   const [submitCount, setSubmitCount] = useState(0);  // Track the number of form submissions
   const [buttonText, setButtonText] = useState("Check Answers");  // Manage button text state
 
   const pageNumber = 0;
   console.log("page number = " + pageNumber);
 
-  const retrievedVerbMap = verbHashes("present");
-  console.log(retrievedVerbMap);
+  const verbsToStudyArray = getVerbArrayFromTenseName(title.toLowerCase());
+  console.log("verb array to study = " + verbsToStudyArray);
 
   // Get number of different verbs to be studied. 
-  const numberOfVerbsToPractice = Object.keys(retrievedVerbMap).length;;
-  console.log(numberOfVerbsToPractice);
+  const numberOfVerbsToStudy = verbsToStudyArray.length;
+  console.log("number of verbs to study = " + numberOfVerbsToStudy);
 
   useEffect(() => {
     const form = document.getElementById("verbForm");
@@ -125,7 +126,7 @@ function Modal() {
     <div className="modal-wrapper">
       <div className="modal-content">
         <header>
-          <h2 className="modal-title">Present Tense</h2>
+          <h2 className="modal-title">{title} Tense</h2>
           <h3 className="modal-subtitle">Gehen</h3>
         </header>
         <form id="verbForm" name="verbForm">
