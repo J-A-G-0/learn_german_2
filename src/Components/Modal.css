@@ -1,0 +1,195 @@
+/* Modal */
+.modal-wrapper {
+    position: fixed; /* float above the page */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.6); /* dark backdrop */
+    z-index: 1000; /* make sure it sits above other content */
+}
+
+.modal-content {
+    background-color: white;
+    width: 90%;
+    max-width: 500px; /* cap width */
+    height: auto; /* Make sure height adjusts to content */
+    max-height: 100%; /* Allow content to grow based on the viewport */
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    box-sizing: border-box;
+    overflow: hidden; /* Prevent scrollbars in modal content */
+}
+
+.modal-title {
+  padding-top: 14px;
+  font-size: 24px;
+  text-transform: uppercase;
+  color: #2C3E50;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.modal-subtitle {
+    font-weight: normal;
+    font-size: 24px;
+    color: #666;
+    padding-bottom: 1.5em;
+    text-align: center;
+}
+
+/* Colours */
+:root {
+  --border: #c6c6c6;
+  --border-focus: #9FB1C1;
+  --blue: #077ABC;
+  --aqua: #07B3A1;
+  --asphalt: #506982;
+}
+
+/* Basic Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Typography & Layout */
+a {
+  text-decoration: none;
+}
+
+body {
+  font-family: montserrat, arial, verdana;
+}
+
+/* Form Styles */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.controls {
+  text-align: left;
+  position: relative;
+}
+
+.controls input[type="text"].correct {
+    border-color: var(--blue); /* Blue border when input is correct */
+    border-width: 1px;
+}
+
+.controls input[type="text"].incorrect {
+    border-color: #E74C3C; /* Red border when input is incorrect */
+    border-width: 1px;
+}
+
+/* Remove hover effect on disabled inputs */
+.controls input:disabled:hover,
+.controls input:disabled:focus {
+    border-color: inherit !important; /* Keeps the existing border color */
+    background-color: inherit !important;
+    color: inherit !important; /* Keeps the text color */
+}
+
+.controls input.incorrect:disabled {
+    border-color: #BC2F07 !important; /* Keep the red border */
+    color: #A10D2F; /* Optional: dark red text */
+}
+
+.controls input.correct:disabled {
+    border-color: var(--blue) !important; /* Keep the red border */
+}
+
+/* Label styling */
+
+/* Colour of text without interaction */
+.controls label {
+  position: absolute;
+  left: 8px;
+  top: 12px;
+  color: #999;
+  font-size: 16px;
+  display: inline-block;
+  padding: 4px 10px;
+  font-weight: 400;
+  background-color: transparent;
+  transition: color 0.3s, top 0.3s, background-color 0.8s;
+}
+
+/* Colour text remains when hovering after you move to next box */
+.controls label.active {
+  top: -11px;
+  color: #555;
+  background-color: white;
+}
+
+.controls label:hover {
+  color: var(--blue);
+}
+
+/* Focus and Hover Styles */
+
+/* Colour of border when clicked on*/
+.controls input[type="text"]:focus {
+  outline: none;
+  border-color: var(--border-focus);
+}
+
+/* Colour of border when hovered over */
+.controls input[type="text"]:hover {
+  border-color: var(--border-focus);
+}
+
+/* Input styles */
+.controls input[type="text"] {
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid var(--border);
+  width: 100%;
+  margin-bottom: 18px;
+  color: #888;
+  background-color: #fff;
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+
+/* Fix for :focus + label */
+.controls input[type="text"]:focus + label,
+.controls textarea:focus + label,
+.controls select:focus + label {
+  color: var(--blue);
+  cursor: text;
+}
+
+.controls .fa-sort {
+  position: absolute;
+  right: 10px;
+  top: 17px;
+  color: #999;
+}
+
+.controls select {
+  appearance: none;
+  cursor: pointer;
+}
+
+.controls textarea {
+  resize: none;
+  height: 200px;
+}
+
+.controls button {
+  cursor: pointer;
+  background-color: var(--aqua);
+  border: none;
+  color: white;
+  padding: 12px 0;
+}
+
+.controls button:hover {
+  background-color: #09d1ba;
+}
