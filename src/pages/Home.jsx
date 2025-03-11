@@ -10,7 +10,6 @@ function Home() {
     return (
         <div className='grid-container'>
           <TileGrid />
-          {/* <Modal /> */}
         </div>
       );    
 }
