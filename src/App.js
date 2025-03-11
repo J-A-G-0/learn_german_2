@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import TileGrid from './TileGrid';
 import './App.css';
 import ReactDOM from "react-dom/client";
@@ -9,7 +8,7 @@ import { useState } from 'react';
 
 function App() {
   return (
-      <Router>
+      <Router basename="/learn_german_2">
           <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/pages/Quiz" element={<Quiz />} />
