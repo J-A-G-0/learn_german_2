@@ -59,6 +59,7 @@ function Modal( {title, onClose } ) {
       validateForm();
       setButtonText("Continue");  // Change button text to 'Continue'
       lockInputs(); // Disable all inputs, but keep submit enabled
+      floatAllLabels();
     } else if (submitCount === 1) {
         // Move to the next verb if there is one
         if (verbNumber < numberOfVerbsToStudy - 1) {
@@ -67,6 +68,8 @@ function Modal( {title, onClose } ) {
           setButtonText("Check Answers"); // Reset button text
           resetInputs(); // Clear the form for the next verb
           resetFloatingLabels();
+          resetCorrectAnswers();
+          resetInputTextColour();
         } else {
           onClose();
           // console.log("Reached the last verb. Handle completion.");
@@ -90,26 +93,70 @@ function Modal( {title, onClose } ) {
   function resetInputs() {
     document.querySelectorAll("#verbForm input").forEach((input) => {
       input.disabled = false; // Enable inputs
-      input.classList.remove("incorrect", "correct"); // Remove highlight
+      input.parentElement.classList.remove("incorrect", "correct"); // Remove highlight
       if (input.type !== "submit") input.value = ""; // Clear input fields
     });
   }
 
+  function resetFloatingLabels() {
+    const floatLabels = document.querySelectorAll('.floatLabel');
+    floatLabels.forEach((input) => {
+      const label = input.nextElementSibling;
+      if (!input.value.trim()) {
+        label.classList.remove('active'); // Remove active class when input is empty
+      }
+    });
+  }
+
+  function floatAllLabels() {
+    const floatLabels = document.querySelectorAll('.floatLabel');
+    floatLabels.forEach((input) => {
+      const label = input.nextElementSibling;
+        label.classList.add('active'); // Remove active class when input is empty
+    });
+  }
+
+
+
+  function resetCorrectAnswers() {
+    const correctAnswerDivs = document.querySelectorAll("#verbForm .correct-answer").forEach((correctAnswerDiv) => {
+      correctAnswerDiv.classList.remove("visible");
+    });
+  };
+
+  function resetInputTextColour() {
+    const inputTexts = document.querySelectorAll("#verbForm input").forEach((inputText) => {
+      inputText.classList.remove('incorrect');
+    });
+  }
+
   // Function to highlight incorrect answers
-  const highlightIncorrectAnswer = (input) => {
-    input.classList.add('incorrect');
+  const highlightInputContainerOfIncorrectAnswer = (inputParentElement) => {
+    inputParentElement.classList.add('incorrect');
   };
 
   // Function to highlight correct answers
-  const highlightCorrectAnswer = (input) => {
-    input.classList.add('correct');
+  const highlightInputContainerOfCorrectAnswer = (inputParentElement) => {
+    inputParentElement.classList.add('correct');
   };
 
   // Logic to check if the user's answer is incorrect
   const answerIsIncorrect = (userAnswer) => {
     const correctAnswer = currentVerbToStudyDictionary[userAnswer.name]
 
-    return userAnswer.value.trim() !== correctAnswer;
+    return userAnswer.value.trim().toLowerCase() !== correctAnswer;
+  };
+
+  const revealCorrectAnswer = (userAnswer) => {
+    const correctAnswer = currentVerbToStudyDictionary[userAnswer.name]
+
+    const correctAnswerDiv = document.getElementById("correct-answer-"+userAnswer.name);
+    correctAnswerDiv.textContent = correctAnswer;
+    correctAnswerDiv.classList.add('visible');
+  };
+
+  const highlightUsersWrongInputText = (userAnswer) => {
+    userAnswer.classList.add("incorrect")
   };
 
   // Function to validate the form inputs
@@ -118,9 +165,11 @@ function Modal( {title, onClose } ) {
     Array.from(form.elements).forEach((input) => {
       if (input.type !== "submit") {
         if (answerIsIncorrect(input)) {
-          highlightIncorrectAnswer(input);
+          highlightInputContainerOfIncorrectAnswer(input.parentElement);
+          revealCorrectAnswer(input);
+          highlightUsersWrongInputText(input);
         } else {
-          highlightCorrectAnswer(input);
+          highlightInputContainerOfCorrectAnswer(input.parentElement);
         }
       }
     });
@@ -170,29 +219,47 @@ function Modal( {title, onClose } ) {
         </header>
         <form id="verbForm" name="verbForm">
           <div className="form-group">
-            <div className="controls">
-              <input type="text" id="ich" className="floatLabel" name="ich" />
-              <label htmlFor="ich">ich</label>
+            <div className="form-section">
+              <div class="input-container">
+                <div class="correct-answer" id="correct-answer-ich">Incorrect</div>
+                <input type="text" id="input-ich" className="floatLabel" name="ich" />
+                <label htmlFor="ich">ich</label>
+              </div>
             </div>
-            <div className="controls">
-              <input type="text" id="du" className="floatLabel" name="du" />
-              <label htmlFor="du">du</label>
+            <div className="form-section">
+              <div class="input-container">
+                <div class="correct-answer" id="correct-answer-du">Incorrect</div>
+                <input type="text" id="input-du" className="floatLabel" name="du" />
+                <label htmlFor="du">du</label>
+              </div>
             </div>
-            <div className="controls">
-              <input type="text" id="er" className="floatLabel" name="er" />
-              <label htmlFor="er">er / sie / es</label>
+            <div className="form-section">
+              <div class="input-container">
+                <div class="correct-answer" id="correct-answer-er">Incorrect</div>
+                <input type="text" id="input-er" className="floatLabel" name="er" />
+                <label htmlFor="er">er / sie / es</label>
+              </div>
             </div>
-            <div className="controls">
-              <input type="text" id="wir" className="floatLabel" name="wir" />
-              <label htmlFor="wir">wir</label>
+            <div className="form-section">
+              <div class="input-container">
+                <div class="correct-answer" id="correct-answer-wir">Incorrect</div>
+                <input type="text" id="input-wir" className="floatLabel" name="wir" />
+                <label htmlFor="wir">wir</label>
+              </div>
             </div>
-            <div className="controls">
-              <input type="text" id="ihr" className="floatLabel" name="ihr" />
-              <label htmlFor="ihr">ihr</label>
+            <div className="form-section">
+              <div class="input-container">
+                <div class="correct-answer" id="correct-answer-ihr">Incorrect</div>
+                <input type="text" id="input-ihr" className="floatLabel" name="ihr" />
+                <label htmlFor="ihr">ihr</label>
+              </div>
             </div>
-            <div className="controls">
-              <input type="text" id="sie" className="floatLabel" name="sie" />
-              <label htmlFor="sie">sie / Sie</label>
+            <div className="form-section">
+              <div class="input-container">
+                <div class="correct-answer" id="correct-answer-sie">Incorrect</div>
+                <input type="text" id="input-sie" className="floatLabel" name="sie" />
+                <label htmlFor="sie">sie / Sie</label>
+              </div>
             </div>
           </div>
           <input type="submit" className="submitButton" id="submitButton" value={buttonText} />

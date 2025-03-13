@@ -90,9 +90,6 @@
 }
 
 /* Typography & Layout */
-a {
-  text-decoration: none;
-}
 
 body {
   font-family: montserrat, arial, verdana;
@@ -103,42 +100,64 @@ body {
   margin-bottom: 20px;
 }
 
-.controls {
+.form-section {
   text-align: left;
   position: relative;
 }
 
-.controls input[type="text"].correct {
-    border-color: var(--blue); /* Blue border when input is correct */
-    border-width: 1px;
-}
-
-.controls input[type="text"].incorrect {
-    border-color: #E74C3C; /* Red border when input is incorrect */
-    border-width: 1px;
-}
+/* Form Section input */
 
 /* Remove hover effect on disabled inputs */
-.controls input:disabled:hover,
-.controls input:disabled:focus {
+.form-section input:disabled:hover,
+.form-section input:disabled:focus {
     border-color: inherit !important; /* Keeps the existing border color */
     background-color: inherit !important;
     color: inherit !important; /* Keeps the text color */
 }
 
-.controls input.incorrect:disabled {
+.form-section input.incorrect:disabled {
     border-color: #BC2F07 !important; /* Keep the red border */
     color: #A10D2F; /* Optional: dark red text */
 }
 
-.controls input.correct:disabled {
+.form-section input.correct:disabled {
     border-color: var(--blue) !important; /* Keep the red border */
 }
 
-/* Label styling */
+/* Focus and Hover Styles */
+
+/* Colour of border when clicked on*/
+.form-section input[type="text"]:focus {
+  outline: none;
+  border-color: var(--border-focus);
+}
+
+/* Colour of border when hovered over */
+.form-section input[type="text"]:hover {
+  border-color: var(--border-focus);
+}
+
+/* Input styles */
+.form-section input[type="text"] {
+  border: none; /* Remove the input border */
+  width: 100%;
+  font-size: 16px;
+  color: #888;
+  background-color: transparent; /* Make it blend with the container */
+  padding: 10px 0; /* Reduce padding so text is closer to the border */}
+
+/* Fix for :focus + label */
+.form-section input[type="text"]:focus + label,
+.form-section textarea:focus + label,
+.form-section select:focus + label {
+  color: var(--blue);
+  cursor: text;
+}
+
+/* Form Section Label styling */
 
 /* Colour of text without interaction */
-.controls label {
+.form-section label {
   position: absolute;
   left: 8px;
   top: 12px;
@@ -152,68 +171,27 @@ body {
 }
 
 /* Colour text remains when hovering after you move to next box */
-.controls label.active {
+.form-section label.active {
   top: -11px;
   color: #555;
   background-color: white;
 }
 
-.controls label:hover {
+.form-section label:hover {
   color: var(--blue);
 }
 
-/* Focus and Hover Styles */
-
-/* Colour of border when clicked on*/
-.controls input[type="text"]:focus {
-  outline: none;
-  border-color: var(--border-focus);
-}
-
-/* Colour of border when hovered over */
-.controls input[type="text"]:hover {
-  border-color: var(--border-focus);
-}
-
-/* Input styles */
-.controls input[type="text"] {
-  padding: 12px;
-  font-size: 16px;
-  border: 1px solid var(--border);
-  width: 100%;
-  margin-bottom: 18px;
-  color: #888;
-  background-color: #fff;
-  border-radius: 2px;
-  transition: all 0.3s;
-}
-
-/* Fix for :focus + label */
-.controls input[type="text"]:focus + label,
-.controls textarea:focus + label,
-.controls select:focus + label {
-  color: var(--blue);
-  cursor: text;
-}
-
-.controls .fa-sort {
-  position: absolute;
-  right: 10px;
-  top: 17px;
-  color: #999;
-}
-
-.controls select {
+.form-section select {
   appearance: none;
   cursor: pointer;
 }
 
-.controls textarea {
+.form-section textarea {
   resize: none;
   height: 200px;
 }
 
-.controls button {
+.form-section button {
   cursor: pointer;
   background-color: var(--aqua);
   border: none;
@@ -221,7 +199,7 @@ body {
   padding: 12px 0;
 }
 
-.controls button:hover {
+.form-section button:hover {
   background-color: #09d1ba;
 }
 
@@ -232,3 +210,69 @@ body {
   width: 30%;
   height: 100%;
 }
+
+/* Input Container */
+
+.input-container {
+  border: 1px solid var(--border); /* Now this form-section the border */
+  padding: 5px; /* Add some padding so input isn't too close to the border */
+  width: 100%;
+  margin-bottom: 18px;
+  background-color: #fff;
+  border-radius: 4px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+}
+
+.input-container:hover {
+  border-color: var(--border-focus);
+}
+
+.input-container:focus-within {
+  border-color: var(--border-focus);
+}
+
+.input-container.incorrect {
+  border-color: #E74C3C !important; 
+}
+
+/* When an answer is correct */
+.input-container.correct {
+  border-color: var(--blue) !important; /* Blue border */
+}
+
+.input-container.correct {
+  border-color: var(--blue) !important;
+}
+
+.input-container.incorrect {
+  border-color: #E74C3C !important;
+}
+
+/* ### */
+
+/* Correct Answer */
+
+.correct-answer {
+  /* Hide by default */
+  display: none; 
+  color: #999;
+}
+
+.correct-answer.visible {
+  display: block;
+  padding-right: 30px;
+  color: #999;
+}
+
+/* ### */
+
+.form-section input.correct {
+  color: var(--blue);
+}
+
+.form-section input.incorrect {
+  color: #E74C3C;
+}
+
