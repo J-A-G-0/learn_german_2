@@ -224,3 +224,11 @@ body {
 .controls button:hover {
   background-color: #09d1ba;
 }
+
+.submitButton {
+  background-color: var(--blue);
+  color: white;
+  border-radius: 4px;
+  width: 30%;
+  height: 100%;
+}
