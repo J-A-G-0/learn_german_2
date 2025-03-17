@@ -1,4 +1,28 @@
+
+/* Colours */
+:root {
+  --border: #c6c6c6;
+  --border-focus: #9FB1C1;
+  --blue: #077ABC;
+  --aqua: #07B3A1;
+  --asphalt: #506982;
+}
+
+/* Basic Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Typography & Layout */
+body {
+  font-family: montserrat, arial, verdana;
+}
+
+
 /* Modal */
+
 .modal-wrapper {
     position: fixed; /* float above the page */
     top: 0;
@@ -13,7 +37,7 @@
 }
 
 .modal-content {
-    background-color: white;
+    background-color: #fafbfc;
     width: 90%;
     max-width: 500px; /* cap width */
     height: auto; /* Make sure height adjusts to content */
@@ -45,7 +69,7 @@
 .modal-content {
     position: relative;
     width: 470px; /* Adjust as needed */
-    background: white;
+    background: #fafbfc;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
@@ -55,6 +79,8 @@
   width: 100%; /* Ensures the header spans the full width */
 }
 
+
+/* close button */
 
 .close-button {
   position: absolute;
@@ -69,41 +95,32 @@
 }
 
 .close-button:hover {
-  color: red;
+  color: var(--border-focus);
 } 
 
 
-/* Colours */
-:root {
-  --border: #c6c6c6;
-  --border-focus: #9FB1C1;
-  --blue: #077ABC;
-  --aqua: #07B3A1;
-  --asphalt: #506982;
-}
+/* Form Group */
 
-/* Basic Reset */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-/* Typography & Layout */
-
-body {
-  font-family: montserrat, arial, verdana;
-}
-
-/* Form Styles */
 .form-group {
   margin-bottom: 20px;
 }
+
+
+/* Form section */
 
 .form-section {
   text-align: left;
   position: relative;
 }
+
+/* .form-section input.correct {
+  color: var(--blue);
+}
+
+.form-section input.incorrect {
+  color: #E74C3C; */
+/* } */
+
 
 /* Form Section input */
 
@@ -168,13 +185,14 @@ body {
   font-weight: 400;
   background-color: transparent;
   transition: color 0.3s, top 0.3s, background-color 0.8s;
+  pointer-events: none; /* Allows clicks to pass through */
 }
 
 /* Colour text remains when hovering after you move to next box */
 .form-section label.active {
   top: -11px;
   color: #555;
-  background-color: white;
+  background-color: #fafbfc;
 }
 
 .form-section label:hover {
@@ -204,12 +222,35 @@ body {
 }
 
 .submitButton {
-  background-color: var(--blue);
-  color: white;
-  border-radius: 4px;
-  width: 30%;
-  height: 100%;
+  display: inline-block;
+  outline: 0;
+  cursor: pointer;
+  padding: 5px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  vertical-align: middle;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  /* color: #24292e; */
+  background-color: #fafbfc;
+  /* border-color: #1b1f2326; */
+  box-shadow: rgba(221, 222, 223, 0.04) 0px 1px 0px 0px, rgba(255, 255, 255, 0.25) 0px 1px 0px 0px inset;
+  transition: 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+  transition-property: color, background-color, border-color;
+  height: 43px;
+  /* color: var(--blue); */
+  color: var(--asphalt);
+
+  /* float: right; */
 }
+
+.submitButton:hover {
+  border-color: var(--border-focus);
+  color: var(--blue);
+
+}
+
 
 /* Input Container */
 
@@ -218,11 +259,14 @@ body {
   padding: 5px; /* Add some padding so input isn't too close to the border */
   width: 100%;
   margin-bottom: 18px;
-  background-color: #fff;
+  background-color: #fafbfc;
   border-radius: 4px;
-  transition: all 0.3s;
+  /* transition: all 0.3s; */
   display: flex;
   align-items: center;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 3s ease-in-out, visibility 3s ease-in-out;
 }
 
 .input-container:hover {
@@ -242,12 +286,19 @@ body {
   border-color: var(--blue) !important; /* Blue border */
 }
 
-.input-container.correct {
-  border-color: var(--blue) !important;
+.input-container.hidden {
+  opacity: 0;
+  height: 0;
+  /* overflow: hidden;
+  transform: scaleY(0); */
+  visibility: hidden; /* Ensure the input doesn't take space before it appears */
+  transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
 }
 
-.input-container.incorrect {
-  border-color: #E74C3C !important;
+.input-container.visible {
+  opacity: 1 0.5s ease-in-out;
+  height: auto;
+  transform: scaleY(1);
 }
 
 /* ### */
@@ -266,13 +317,4 @@ body {
   color: #999;
 }
 
-/* ### */
-
-.form-section input.correct {
-  color: var(--blue);
-}
-
-.form-section input.incorrect {
-  color: #E74C3C;
-}
 

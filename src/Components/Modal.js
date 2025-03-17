@@ -2,38 +2,38 @@ import React, { useEffect, useState } from 'react';
 import './Modal.css';
 import { getVerbArrayFromTenseName } from '../Data/Verbs';
 import verbs from '../Data/Verbs';
+import FormSection from './FormSection';
+import { getMapOfSubjectData } from "./databaseInteractionHandler";
+import { Form } from 'react-router-dom';
 
 function Modal( {title, onClose } ) {
-  const [submitCount, setSubmitCount] = useState(0);  // Track the number of form submissions
-  const [buttonText, setButtonText] = useState("Check Answers");  // Manage button text state
+
+
+  // Retrieve verb data for the current modal. Set up hooks. 
+
   const [verbNumber, setVerbNumber] = useState(0); // Track the current verb index
 
-  // ###
-  // Retrieve verb data for the current modal. 
-  // ###
+  const mapOfSubjectData = getMapOfSubjectData(title);
+  // This has to stay to be passed to a function later on.
+  const currentVerbToStudy = mapOfSubjectData.get("wordsToStudyArray")[verbNumber]
+  const currentVerbToStudyDictionary = verbs[currentVerbToStudy][mapOfSubjectData.get("subjectToBeStudied")];
+
+  const [submitCount, setSubmitCount] = useState(0);  // Track the number of form submissions
+  const [buttonText, setButtonText] = useState("Check Answers");  // Manage button text state
+  // Get an array containing all the labels (e.g. "ich", "du", etc)
+  const [inputNames] = useState(mapOfSubjectData.get("labelsAsArray"))
+  console.log("inputNames = ", inputNames);
+  const [visibleInputs, setVisibleInputs] = useState([inputNames[0]]); // Start with first input visible
 
   console.log("verb number = " + verbNumber);
-
-  const tenseToStudy = title.toLowerCase();
-  console.log("tenseToStudy = " + tenseToStudy);
-
-  const verbsToStudyArray = getVerbArrayFromTenseName(tenseToStudy);
-  console.log("verb array to study = " + verbsToStudyArray);
-
-  // Get number of different verbs to be studied. 
-  const numberOfVerbsToStudy = verbsToStudyArray.length;
-  console.log("number of verbs to study = " + numberOfVerbsToStudy);
-
-  const currentVerbToStudy = verbsToStudyArray[verbNumber]
+  // console.log("tenseToStudy = " + tenseToStudy);
+  // console.log("verb array to study = " + verbsToStudyArray);
+  // console.log("number of verbs to study = " + mapOfSubjectData.get("numberOfVerbsToStudy"));
   console.log("currentVerbToStudy = " + currentVerbToStudy);
-
-  // Note syntax here. The following would not log properly:
-  // const currentVerbToStudyDictionary = verbs[currentVerbToStudy][tenseToStudy];
-  const currentVerbToStudyDictionary = verbs[currentVerbToStudy][tenseToStudy];
   console.log("Full dictionary for this verb = ", currentVerbToStudyDictionary);
 
-// ###
 
+  // Form submission
 
   useEffect(() => {
     const form = document.getElementById("verbForm");
@@ -49,7 +49,6 @@ function Modal( {title, onClose } ) {
     };
   }, [submitCount]);
 
-  // Logic for form submission
   function handleSubmit(event) {
     event.preventDefault();  // Prevent the form from submitting the traditional way
     setSubmitCount((prevCount) => prevCount + 1);  // Increment submit count
@@ -62,7 +61,7 @@ function Modal( {title, onClose } ) {
       floatAllLabels();
     } else if (submitCount === 1) {
         // Move to the next verb if there is one
-        if (verbNumber < numberOfVerbsToStudy - 1) {
+        if (verbNumber < mapOfSubjectData.get("numberOfVerbsToStudy") - 1) {
           setVerbNumber((prevVerbNumber) => prevVerbNumber + 1);
           setSubmitCount(0); // Reset submit count for the new verb
           setButtonText("Check Answers"); // Reset button text
@@ -70,6 +69,7 @@ function Modal( {title, onClose } ) {
           resetFloatingLabels();
           resetCorrectAnswers();
           resetInputTextColour();
+          resetFormToOneSection();
         } else {
           onClose();
           // console.log("Reached the last verb. Handle completion.");
@@ -90,21 +90,17 @@ function Modal( {title, onClose } ) {
     console.log("consider it locked Ma'am");
   }
 
-  function resetInputs() {
-    document.querySelectorAll("#verbForm input").forEach((input) => {
-      input.disabled = false; // Enable inputs
-      input.parentElement.classList.remove("incorrect", "correct"); // Remove highlight
-      if (input.type !== "submit") input.value = ""; // Clear input fields
-    });
-  }
+  
+  // Floating Labels 
 
   function resetFloatingLabels() {
     const floatLabels = document.querySelectorAll('.floatLabel');
     floatLabels.forEach((input) => {
       const label = input.nextElementSibling;
-      if (!input.value.trim()) {
-        label.classList.remove('active'); // Remove active class when input is empty
-      }
+      label.classList.remove('active'); // Remove active class when input is empty
+      // if (!input.value.trim()) {
+      //   label.classList.remove('active'); // Remove active class when input is empty
+      // }
     });
   }
 
@@ -116,7 +112,108 @@ function Modal( {title, onClose } ) {
     });
   }
 
+    // Floating labels logic
 
+useEffect(() => {
+  const floatLabels = document.querySelectorAll('.floatLabel');
+
+  floatLabels.forEach((input) => {
+    const label = input.nextElementSibling;
+
+    input.addEventListener("focus", () => {
+      label.classList.add('active');
+    });
+
+    input.addEventListener("blur", () => {
+      if (!input.value.trim()) {
+        label.classList.remove('active');
+      }
+    });
+
+    // If input already has a value, ensure label is active
+    if (input.value.trim()) {
+      label.classList.add('active');
+    }
+  });
+
+  // Cleanup event listeners on unmount
+  return () => {
+    floatLabels.forEach((input) => {
+      const label = input.nextElementSibling;
+
+      input.removeEventListener("focus", () => {
+        label.classList.add('active');
+      });
+
+      input.removeEventListener("blur", () => {
+        if (!input.value.trim()) {
+          label.classList.remove('active');
+        }
+      });
+    });
+  };
+}, [visibleInputs]); // 🔥 Re-run this effect every time visibleInputs changes
+  
+    function resetFloatingLabels() {
+      const floatLabels = document.querySelectorAll('.floatLabel');
+      floatLabels.forEach((input) => {
+        const label = input.nextElementSibling;
+        if (!input.value.trim()) {
+          label.classList.remove('active'); // Remove active class when input is empty
+        }
+      });
+    }
+  
+
+
+  // Input div
+
+  function resetInputs() {
+    document.querySelectorAll("#verbForm input").forEach((input) => {
+      input.disabled = false; // Enable inputs
+      input.parentElement.classList.remove("incorrect", "correct"); // Remove highlight
+      if (input.type !== "submit") input.value = ""; // Clear input fields
+    });
+  }
+
+  function resetInputTextColour() {
+    const inputTexts = document.querySelectorAll("#verbForm input").forEach((inputText) => {
+      inputText.classList.remove('incorrect');
+    });
+  }
+
+  const highlightUsersWrongInputText = (userAnswer) => {
+    userAnswer.classList.add("incorrect")
+  };
+
+  const setUserInputToNoAnswerGivenWhereBlank = (userAnswer) => {
+    // console.log("userAnswer in the method ", userAnswer)
+    if (userAnswer.value == null || userAnswer.value == "") {
+      userAnswer.value = "No Answer Given"
+    }
+    // console.log("and at the end of the function ", userAnswer)
+  };
+
+  const handleInputFocus = (inputName) => {
+    const currentIndex = inputNames.indexOf(inputName);
+    const nextIndex = currentIndex + 1;
+
+    if (nextIndex < inputNames.length) {
+        setVisibleInputs((prev) => [...prev, inputNames[nextIndex]]);
+    }
+        // Ensure floating labels update for new inputs
+    setTimeout(() => {
+      document.querySelectorAll('.floatLabel').forEach((input) => {
+        const label = input.nextElementSibling;
+        if (input.value.trim()) {
+          label.classList.add('active');
+        }
+      });
+    }, 50);
+    };
+
+  
+  // correct answer div
 
   function resetCorrectAnswers() {
     const correctAnswerDivs = document.querySelectorAll("#verbForm .correct-answer").forEach((correctAnswerDiv) => {
@@ -124,11 +221,16 @@ function Modal( {title, onClose } ) {
     });
   };
 
-  function resetInputTextColour() {
-    const inputTexts = document.querySelectorAll("#verbForm input").forEach((inputText) => {
-      inputText.classList.remove('incorrect');
-    });
-  }
+  const revealCorrectAnswer = (userAnswer) => {
+    const correctAnswer = currentVerbToStudyDictionary[userAnswer.name]
+
+    const correctAnswerDiv = document.getElementById("correct-answer-"+userAnswer.name);
+    correctAnswerDiv.textContent = correctAnswer;
+    correctAnswerDiv.classList.add('visible');
+  };
+
+
+  // input container div
 
   // Function to highlight incorrect answers
   const highlightInputContainerOfIncorrectAnswer = (inputParentElement) => {
@@ -140,6 +242,9 @@ function Modal( {title, onClose } ) {
     inputParentElement.classList.add('correct');
   };
 
+
+  // answer validation
+
   // Logic to check if the user's answer is incorrect
   const answerIsIncorrect = (userAnswer) => {
     const correctAnswer = currentVerbToStudyDictionary[userAnswer.name]
@@ -147,22 +252,12 @@ function Modal( {title, onClose } ) {
     return userAnswer.value.trim().toLowerCase() !== correctAnswer;
   };
 
-  const revealCorrectAnswer = (userAnswer) => {
-    const correctAnswer = currentVerbToStudyDictionary[userAnswer.name]
-
-    const correctAnswerDiv = document.getElementById("correct-answer-"+userAnswer.name);
-    correctAnswerDiv.textContent = correctAnswer;
-    correctAnswerDiv.classList.add('visible');
-  };
-
-  const highlightUsersWrongInputText = (userAnswer) => {
-    userAnswer.classList.add("incorrect")
-  };
-
   // Function to validate the form inputs
   function validateForm() {
     const form = document.forms["verbForm"];
     Array.from(form.elements).forEach((input) => {
+      setUserInputToNoAnswerGivenWhereBlank(input);
+      console.log("input now = ", input)
       if (input.type !== "submit") {
         if (answerIsIncorrect(input)) {
           highlightInputContainerOfIncorrectAnswer(input.parentElement);
@@ -175,38 +270,15 @@ function Modal( {title, onClose } ) {
     });
   }
 
-  // Floating labels logic
-  useEffect(() => {
-    const floatLabels = document.querySelectorAll('.floatLabel');
-    floatLabels.forEach((input) => {
-      const label = input.nextElementSibling;
+  
+  // Form Section Div
 
-      input.addEventListener("focus", () => {
-        label.classList.add('active');
-      });
-
-      input.addEventListener("blur", () => {
-        if (!input.value.trim()) {
-          label.classList.remove('active');
-        }
-      });
-
-      if (input.value.trim()) {
-        label.classList.add('active');
-      }
-    });
-  }, []);
-
-  function resetFloatingLabels() {
-    const floatLabels = document.querySelectorAll('.floatLabel');
-    floatLabels.forEach((input) => {
-      const label = input.nextElementSibling;
-      if (!input.value.trim()) {
-        label.classList.remove('active'); // Remove active class when input is empty
-      }
-    });
+  function resetFormToOneSection() {
+    setVisibleInputs([inputNames[0]]);// Start with first input visible
   }
   
+
+  // Create the form
 
   return (
     <div className="modal-wrapper">
@@ -219,49 +291,17 @@ function Modal( {title, onClose } ) {
         </header>
         <form id="verbForm" name="verbForm">
           <div className="form-group">
-            <div className="form-section">
-              <div class="input-container">
-                <div class="correct-answer" id="correct-answer-ich">Incorrect</div>
-                <input type="text" id="input-ich" className="floatLabel" name="ich" />
-                <label htmlFor="ich">ich</label>
-              </div>
+          {mapOfSubjectData.get("labelsMap")
+              .filter(({ inputName }) => visibleInputs.includes(inputName))  // Only show visible inputs
+              .map(({ inputName, label }) => (
+            <FormSection 
+              key={inputName} 
+              inputName={inputName} 
+              label={label} 
+              onFocus={() => handleInputFocus(inputName)} 
+            />
+          ))}
             </div>
-            <div className="form-section">
-              <div class="input-container">
-                <div class="correct-answer" id="correct-answer-du">Incorrect</div>
-                <input type="text" id="input-du" className="floatLabel" name="du" />
-                <label htmlFor="du">du</label>
-              </div>
-            </div>
-            <div className="form-section">
-              <div class="input-container">
-                <div class="correct-answer" id="correct-answer-er">Incorrect</div>
-                <input type="text" id="input-er" className="floatLabel" name="er" />
-                <label htmlFor="er">er / sie / es</label>
-              </div>
-            </div>
-            <div className="form-section">
-              <div class="input-container">
-                <div class="correct-answer" id="correct-answer-wir">Incorrect</div>
-                <input type="text" id="input-wir" className="floatLabel" name="wir" />
-                <label htmlFor="wir">wir</label>
-              </div>
-            </div>
-            <div className="form-section">
-              <div class="input-container">
-                <div class="correct-answer" id="correct-answer-ihr">Incorrect</div>
-                <input type="text" id="input-ihr" className="floatLabel" name="ihr" />
-                <label htmlFor="ihr">ihr</label>
-              </div>
-            </div>
-            <div className="form-section">
-              <div class="input-container">
-                <div class="correct-answer" id="correct-answer-sie">Incorrect</div>
-                <input type="text" id="input-sie" className="floatLabel" name="sie" />
-                <label htmlFor="sie">sie / Sie</label>
-              </div>
-            </div>
-          </div>
           <input type="submit" className="submitButton" id="submitButton" value={buttonText} />
         </form>
       </div>
