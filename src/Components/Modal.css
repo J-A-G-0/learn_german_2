@@ -113,14 +113,6 @@ body {
   position: relative;
 }
 
-/* .form-section input.correct {
-  color: var(--blue);
-}
-
-.form-section input.incorrect {
-  color: #E74C3C; */
-/* } */
-
 
 /* Form Section input */
 
@@ -163,13 +155,6 @@ body {
   background-color: transparent; /* Make it blend with the container */
   padding: 10px 0; /* Reduce padding so text is closer to the border */}
 
-/* Fix for :focus + label */
-.form-section input[type="text"]:focus + label,
-.form-section textarea:focus + label,
-.form-section select:focus + label {
-  color: var(--blue);
-  cursor: text;
-}
 
 /* Form Section Label styling */
 
@@ -188,38 +173,25 @@ body {
   pointer-events: none; /* Allows clicks to pass through */
 }
 
-/* Colour text remains when hovering after you move to next box */
+/* Floating the labels */
 .form-section label.active {
-  top: -11px;
-  color: #555;
+  top: -11px; /* Make the text float */
   background-color: #fafbfc;
 }
 
+/* 
+.form-section label:hover {
+  color: var(--blue);
+} */
+
+.form-section input[type="text"]:focus + label,
+.form-section textarea:focus + label,
+.form-section select:focus + label,
 .form-section label:hover {
   color: var(--blue);
 }
 
-.form-section select {
-  appearance: none;
-  cursor: pointer;
-}
-
-.form-section textarea {
-  resize: none;
-  height: 200px;
-}
-
-.form-section button {
-  cursor: pointer;
-  background-color: var(--aqua);
-  border: none;
-  color: white;
-  padding: 12px 0;
-}
-
-.form-section button:hover {
-  background-color: #09d1ba;
-}
+/* submitButton */
 
 .submitButton {
   display: inline-block;
@@ -241,27 +213,23 @@ body {
   height: 43px;
   /* color: var(--blue); */
   color: var(--asphalt);
-
-  /* float: right; */
 }
 
 .submitButton:hover {
   border-color: var(--border-focus);
   color: var(--blue);
-
 }
 
 
 /* Input Container */
 
 .input-container {
-  border: 1px solid var(--border); /* Now this form-section the border */
-  padding: 5px; /* Add some padding so input isn't too close to the border */
+  border: 1px solid var(--border); 
+  padding: 5px; 
   width: 100%;
   margin-bottom: 18px;
   background-color: #fafbfc;
   border-radius: 4px;
-  /* transition: all 0.3s; */
   display: flex;
   align-items: center;
   opacity: 1;
@@ -271,6 +239,11 @@ body {
 
 .input-container:hover {
   border-color: var(--border-focus);
+}
+
+/* Make the label turn blue when we hover on the input-container */
+.input-container:hover label {
+  color: var(--blue);
 }
 
 .input-container:focus-within {
@@ -313,8 +286,10 @@ body {
 
 .correct-answer.visible {
   display: block;
-  padding-right: 30px;
+  padding-right: 50px;
   color: #999;
+  white-space: nowrap; /* stop the text stacking */
+  overflow: hidden;
 }
 
 

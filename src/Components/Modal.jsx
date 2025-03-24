@@ -55,7 +55,7 @@ function Modal( {title, onClose } ) {
 
     if (submitCount === 0) {
       // First time: validate the form and show errors
-      validateForm();
+      validateForm(document.forms["verbForm"]);
       setButtonText("Continue");  // Change button text to 'Continue'
       lockInputs(); // Disable all inputs, but keep submit enabled
       floatAllLabels();
@@ -253,8 +253,7 @@ useEffect(() => {
   };
 
   // Function to validate the form inputs
-  function validateForm() {
-    const form = document.forms["verbForm"];
+  function validateForm(form) {
     Array.from(form.elements).forEach((input) => {
       setUserInputToNoAnswerGivenWhereBlank(input);
       console.log("input now = ", input)
