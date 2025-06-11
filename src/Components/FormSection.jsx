@@ -22,9 +22,9 @@ e.g. inputName = "ich":
 const FormSection = ( {inputName, label, onFocus} ) => {
     return (
         <div className="form-section">
-            <div class="input-container">
-                <div class="correct-answer" id={`correct-answer-${inputName}`}>Incorrect</div>
-                <input type="text" id={`input-${inputName}`} className="floatLabel" name={inputName} autocomplete="off" onFocus={() => onFocus(inputName)} />
+            <div className="input-container">
+                <div className="correct-answer" id={`correct-answer-${inputName}`}>Incorrect</div>
+                <input type="text" id={`input-${inputName}`} className="floatLabel" name={inputName} autoComplete="off" onFocus={() => onFocus(inputName)} />
                 <label htmlFor={inputName}>{label}</label>
             </div>
         </div>

@@ -3,30 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import Modal from './Components/Modal';
 
-// Previous way of doing things with quiz page using Router. Pre-Dom. 
-// // Function to create a div of class tile. We can pass this props so it knows how to look. 
-// function Tile({ title = "Title not set" }) {
-//     const navigate = useNavigate();
-
-//     // Navigate to the quiz page. state can then be accessed, and the page title within it. 
-//     // https://stackoverflow.com/questions/64566405/react-router-dom-v6-usenavigate-passing-value-to-another-component
-//     const toQuizPage = () => {
-//         navigate('/pages/Quiz', {state:{name: title}});
-//     }
-
-//     const handleClick = () => {
-//         toQuizPage()
-//     };
-    
-//     return (
-//         <div class="tile" onClick={handleClick}>
-//             {title}
-//         </div>
-//     );
-// }
-
-
-// New way 
 
 // Function to create a div of class tile. We can pass this props so it knows how to look. 
 // Tile Component
