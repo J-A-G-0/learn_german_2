@@ -71,8 +71,8 @@ function QuizForm({ mapOfSubjectData, verbNumber, setVerbNumber, onClose }) {
   // Floating Labels 
 
   function resetFloatingLabels() {
-    const floatLabels = document.querySelectorAll('.floatLabel');
-    floatLabels.forEach((input) => {
+    const inputAreas = document.querySelectorAll('.inputArea');
+    inputAreas.forEach((input) => {
       const label = input.nextElementSibling;
       label.classList.remove('active'); // Remove active class when input is empty
       // if (!input.value.trim()) {
@@ -82,8 +82,8 @@ function QuizForm({ mapOfSubjectData, verbNumber, setVerbNumber, onClose }) {
   }
 
   function floatAllLabels() {
-    const floatLabels = document.querySelectorAll('.floatLabel');
-    floatLabels.forEach((input) => {
+    const inputAreas = document.querySelectorAll('.inputArea');
+    inputAreas.forEach((input) => {
       const label = input.nextElementSibling;
         label.classList.add('active'); // Remove active class when input is empty
     });
@@ -92,9 +92,9 @@ function QuizForm({ mapOfSubjectData, verbNumber, setVerbNumber, onClose }) {
     // Floating labels logic
 
 useEffect(() => {
-  const floatLabels = document.querySelectorAll('.floatLabel');
+  const inputAreas = document.querySelectorAll('.inputArea');
 
-  floatLabels.forEach((input) => {
+  inputAreas.forEach((input) => {
     const label = input.nextElementSibling;
 
     input.addEventListener("focus", () => {
@@ -115,7 +115,7 @@ useEffect(() => {
 
   // Cleanup event listeners on unmount
   return () => {
-    floatLabels.forEach((input) => {
+    inputAreas.forEach((input) => {
       const label = input.nextElementSibling;
 
       input.removeEventListener("focus", () => {
@@ -132,8 +132,8 @@ useEffect(() => {
 }, [visibleInputs]); // 🔥 Re-run this effect every time visibleInputs changes
   
     function resetFloatingLabels() {
-      const floatLabels = document.querySelectorAll('.floatLabel');
-      floatLabels.forEach((input) => {
+      const inputAreas = document.querySelectorAll('.inputArea');
+      inputAreas.forEach((input) => {
         const label = input.nextElementSibling;
         if (!input.value.trim()) {
           label.classList.remove('active'); // Remove active class when input is empty
@@ -180,7 +180,7 @@ useEffect(() => {
     }
         // Ensure floating labels update for new inputs
     setTimeout(() => {
-      document.querySelectorAll('.floatLabel').forEach((input) => {
+      document.querySelectorAll('.inputArea').forEach((input) => {
         const label = input.nextElementSibling;
         if (input.value.trim()) {
           label.classList.add('active');

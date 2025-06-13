@@ -1,0 +1,96 @@
+
+/* Input Container */
+
+.input-container-div {
+  border: 1px solid var(--border); 
+  padding: 5px; 
+  width: 100%;
+  margin-bottom: 18px;
+  background-color: var(--modal-background);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 3s ease-in-out, visibility 3s ease-in-out;
+}
+
+/* Darken border colour when hovered over */
+.input-container-div:hover {
+  border-color: var(--border-focus);
+}
+
+/* Make the label change colour when we hover on the input-container-div */
+.input-container-div:hover label {
+  color: var(--text-focus);
+}
+
+/* Keep border darkened while input is clicked in */
+.input-container-div:focus-within {
+  border-color: var(--border-focus);
+}
+
+/* Keep the label text on focus colour while we are clicked on the input, even if the mouse drifts away */
+.input-container-div:focus-within label {
+  color: var(--text-focus);
+}
+
+
+/* Change border colour when answer is incorrect */ 
+.input-container-div.incorrect {
+  border-color: #E74C3C; 
+}
+
+/* Change border colour when answer is correct */
+.input-container-div.correct {
+  border-color: var(--blue); /* Blue border */
+}
+
+.input-container-div.hidden {
+  opacity: 0;
+  height: 0;
+  visibility: hidden; /* Ensure the input doesn't take space before it appears */
+  transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+}
+
+.input-container-div.visible {
+  opacity: 1 0.5s ease-in-out;
+  height: auto;
+  transform: scaleY(1);
+}
+
+.inputArea {
+  border: none; /* Remove the input border */
+  width: 100%;
+  font-size: 16px;
+  color: #888;
+  background-color: transparent; /* Make it blend with the container */
+  padding: 10px 0; /* Reduce padding so text is closer to the border */
+}
+
+/* inputArea refers to the entire text input. We want no outline here, that is provided by input-container-div*/
+.inputArea:focus {
+  outline: none;
+}
+
+/* Colour of pronounLabel (e.g. "ich") without interaction */
+.pronounLabel {
+  position: absolute;
+  left: 8px;
+  top: 12px;
+  color: #999;
+  font-size: 16px;
+  display: inline-block;
+  padding: 4px 10px;
+  font-weight: 400;
+  background-color: transparent;
+  transition: color 0.3s, top 0.3s, background-color 0.8s;
+  pointer-events: none; /* Allows clicks to pass through */
+}
+
+/* Float the pronounLabel when hovered over */ 
+.pronounLabel.active {
+  top: -11px; /* Make the text float */
+  background-color: var(--modal-background);
+}
+

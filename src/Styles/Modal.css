@@ -1,0 +1,112 @@
+
+
+/* Basic Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Typography & Layout */
+body {
+  font-family: montserrat, arial, verdana;
+}
+
+
+/* Modal */
+/* Modal Wrapper */
+.modal-wrapper {
+    position: fixed; /* float above the page */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.6); /* dark backdrop */
+    z-index: 1000; /* make sure it sits above other content */
+}
+/* Background of modal */
+.modal-content {
+    position: relative;
+    width: 470px; /* Adjust as needed */
+    max-width: 500px; /* cap width */
+    height: auto; /* Make sure height adjusts to content */
+    max-height: 100%; /* Allow content to grow based on the viewport */
+    padding: 20px;
+    box-sizing: border-box;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    overflow: hidden; /* Prevent scrollbars in modal content */
+    background: var(--modal-background);
+}
+/* Title, e.g. 'Present Tense' */
+.modal-title {
+  padding-top: 14px;
+  font-size: 24px;
+  text-transform: uppercase;
+  color: var(--modal-title);
+  letter-spacing: 1px;
+  text-align: center;
+}
+/* Subtitle, e.g. 'essen' */
+.modal-subtitle {
+    font-weight: normal;
+    font-size: 24px;
+    color: var(--modal-subtitle);
+    padding-bottom: 1.5em;
+    text-align: center;
+}
+
+/* close button */
+.close-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #333;
+  font-weight: bold;
+}
+.close-button:hover {
+  color: var(--border-focus);
+} 
+
+/* Form section */
+.form-section {
+  text-align: left;
+  position: relative;
+}
+
+/* Form Section input */
+
+/* This is giving the 'no answer given' text a red colour */
+.form-section input.incorrect:disabled {
+    color: #A10D2F; /* Optional: dark red text */
+}
+
+/* Focus and Hover Styles */
+
+/* Input styles */
+
+
+/* Correct Answer */
+
+.correct-answer {
+  /* Hide by default */
+  display: none; 
+  color: #999;
+}
+
+.correct-answer.visible {
+  display: block;
+  padding-right: 50px;
+  color: #999;
+  white-space: nowrap; /* stop the text stacking */
+  overflow: hidden;
+}
+
+

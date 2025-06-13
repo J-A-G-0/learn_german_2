@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import "./Modal.css";
-import verbs from "../Data/Verbs";
+import "../Styles/Global.css";
 import { getMapOfSubjectData } from "./databaseInteractionHandler";
 import QuizForm from "./QuizForm";
 
