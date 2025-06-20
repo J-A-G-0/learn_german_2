@@ -1,11 +1,17 @@
 import React, { useState } from "react";
 import "../Styles/Global.css";
-import { getMapOfSubjectData } from "./databaseInteractionHandler";
+import { getQuizData } from "./databaseInteractionHandler";
 import QuizForm from "./QuizForm";
+import { SubjectToBeStudied } from "../types";
 
-function Modal({ title, onClose }) {
+interface ModalProps {
+  title: SubjectToBeStudied;
+  onClose: () => void;
+}
+
+const Modal: React.FC<ModalProps> = ({ title, onClose }) => {
   const [verbNumber, setVerbNumber] = useState(0);
-  const mapOfSubjectData = getMapOfSubjectData(title);
+  const quizData = getQuizData(title);
 
   return (
     <div className="modal-wrapper">
@@ -16,11 +22,11 @@ function Modal({ title, onClose }) {
           </button>
           <h2 className="modal-title">{title} Tense</h2>
           <h3 className="modal-subtitle">
-            {mapOfSubjectData.get("wordsToStudyArray")[verbNumber]}
+            {quizData.wordsToStudy[verbNumber]}
           </h3>
         </header>
         <QuizForm
-          mapOfSubjectData={mapOfSubjectData}
+          quizData={quizData}
           verbNumber={verbNumber}
           setVerbNumber={setVerbNumber}
           onClose={onClose}

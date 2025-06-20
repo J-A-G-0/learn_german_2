@@ -2,239 +2,83 @@ import React, { useState, useEffect } from "react";
 import FormSection from "./FormSection";
 import verbs from "../Data/Verbs";
 
-function QuizForm({ mapOfSubjectData, verbNumber, setVerbNumber, onClose }) {
+function QuizForm({ quizData, verbNumber, setVerbNumber, onClose }) {
   const [submitCount, setSubmitCount] = useState(0);
   const [buttonText, setButtonText] = useState("Check Answers");
-  const [inputNames] = useState(mapOfSubjectData.get("labelsAsArray"));
+  const [inputNames] = useState(quizData.labelsAsArray);
   const [visibleInputs, setVisibleInputs] = useState([inputNames[0]]);
 
-  const currentVerbToStudy =
-    mapOfSubjectData.get("wordsToStudyArray")[verbNumber];
-  const currentVerbToStudyDictionary =
-    verbs[currentVerbToStudy][mapOfSubjectData.get("subjectToBeStudied")];
+  const currentVerb = quizData.wordsToStudy[verbNumber];
+  const currentVerbDict = verbs[currentVerb][quizData.subjectToBeStudied];
 
+  // Reset form state when verbNumber changes
   useEffect(() => {
-    const form = document.getElementById("quizForm");
-    if (form) {
-      form.addEventListener("submit", handleSubmit);
-    }
+    setSubmitCount(0);
+    setButtonText("Check Answers");
+    setVisibleInputs([inputNames[0]]);
+    resetInputs();
+    resetFloatingLabels();
+    resetCorrectAnswers();
+    resetInputTextColour();
+  }, [verbNumber]);
 
-    return () => {
-      if (form) {
-        form.removeEventListener("submit", handleSubmit);
-      }
-    };
-  }, [submitCount]);
-
-  function handleSubmit(event) {
-    event.preventDefault();  // Prevent the form from submitting the traditional way
-    setSubmitCount((prevCount) => prevCount + 1);  // Increment submit count
-
-    if (submitCount === 0) {
-      // First time: validate the form and show errors
-      validateForm(document.forms["quizForm"]);
-      setButtonText("Continue");  // Change button text to 'Continue'
-      lockInputs(); // Disable all inputs, but keep submit enabled
-      floatAllLabels();
-    } else if (submitCount === 1) {
-        // Move to the next verb if there is one
-        if (verbNumber < mapOfSubjectData.get("numberOfVerbsToStudy") - 1) {
-          setVerbNumber((prevVerbNumber) => prevVerbNumber + 1);
-          setSubmitCount(0); // Reset submit count for the new verb
-          setButtonText("Check Answers"); // Reset button text
-          resetInputs(); // Clear the form for the next verb
-          resetFloatingLabels();
-          resetCorrectAnswers();
-          resetInputTextColour();
-          resetFormToOneSection();
-        } else {
-          onClose();
-          // console.log("Reached the last verb. Handle completion.");
-        }
-      }
-  }
-
-  // Prevent user interaction after first submit
-  function lockInputs() {
-    const form = document.getElementById("quizForm");
-    if (form) {
-      Array.from(form.elements).forEach((input) => {
-        if (input.type !== "submit") {
-          input.disabled = true; // Disable all fields
-        }
-      });
-    }
-    console.log("consider it locked Ma'am");
-  }
-
-  
-  // Floating Labels 
-
-  function resetFloatingLabels() {
+  // Floating labels setup
+  useEffect(() => {
     const inputAreas = document.querySelectorAll('.inputArea');
-    inputAreas.forEach((input) => {
-      const label = input.nextElementSibling;
-      label.classList.remove('active'); // Remove active class when input is empty
-      // if (!input.value.trim()) {
-      //   label.classList.remove('active'); // Remove active class when input is empty
-      // }
-    });
-  }
 
-  function floatAllLabels() {
-    const inputAreas = document.querySelectorAll('.inputArea');
-    inputAreas.forEach((input) => {
-      const label = input.nextElementSibling;
-        label.classList.add('active'); // Remove active class when input is empty
-    });
-  }
-
-    // Floating labels logic
-
-useEffect(() => {
-  const inputAreas = document.querySelectorAll('.inputArea');
-
-  inputAreas.forEach((input) => {
-    const label = input.nextElementSibling;
-
-    input.addEventListener("focus", () => {
-      label.classList.add('active');
-    });
-
-    input.addEventListener("blur", () => {
-      if (!input.value.trim()) {
-        label.classList.remove('active');
-      }
-    });
-
-    // If input already has a value, ensure label is active
-    if (input.value.trim()) {
-      label.classList.add('active');
-    }
-  });
-
-  // Cleanup event listeners on unmount
-  return () => {
     inputAreas.forEach((input) => {
       const label = input.nextElementSibling;
 
-      input.removeEventListener("focus", () => {
-        label.classList.add('active');
-      });
-
-      input.removeEventListener("blur", () => {
+      input.addEventListener("focus", () => label.classList.add('active'));
+      input.addEventListener("blur", () => {
         if (!input.value.trim()) {
           label.classList.remove('active');
         }
       });
+
+      if (input.value.trim()) {
+        label.classList.add('active');
+      }
     });
-  };
-}, [visibleInputs]); // 🔥 Re-run this effect every time visibleInputs changes
-  
-    function resetFloatingLabels() {
-      const inputAreas = document.querySelectorAll('.inputArea');
+
+    return () => {
       inputAreas.forEach((input) => {
         const label = input.nextElementSibling;
-        if (!input.value.trim()) {
-          label.classList.remove('active'); // Remove active class when input is empty
-        }
+        input.removeEventListener("focus", () => label.classList.add('active'));
+        input.removeEventListener("blur", () => {
+          if (!input.value.trim()) {
+            label.classList.remove('active');
+          }
+        });
       });
-    }
-  
-
-
-  // Input div
-
-  function resetInputs() {
-    document.querySelectorAll("#quizForm input").forEach((input) => {
-      input.disabled = false; // Enable inputs
-      input.parentElement.classList.remove("incorrect", "correct"); // Remove highlight
-      if (input.type !== "submit") input.value = ""; // Clear input fields
-    });
-  }
-
-  function resetInputTextColour() {
-    const inputTexts = document.querySelectorAll("#quizForm input").forEach((inputText) => {
-      inputText.classList.remove('incorrect');
-    });
-  }
-
-  const highlightUsersWrongInputText = (userAnswer) => {
-    userAnswer.classList.add("incorrect")
-  };
-
-  const setUserInputToNoAnswerGivenWhereBlank = (userAnswer) => {
-    // console.log("userAnswer in the method ", userAnswer)
-    if (userAnswer.value == null || userAnswer.value == "") {
-      userAnswer.value = "No Answer Given"
-    }
-    // console.log("and at the end of the function ", userAnswer)
-  };
-
-  const handleInputFocus = (inputName) => {
-    const currentIndex = inputNames.indexOf(inputName);
-    const nextIndex = currentIndex + 1;
-
-    if (nextIndex < inputNames.length) {
-        setVisibleInputs((prev) => [...prev, inputNames[nextIndex]]);
-    }
-        // Ensure floating labels update for new inputs
-    setTimeout(() => {
-      document.querySelectorAll('.inputArea').forEach((input) => {
-        const label = input.nextElementSibling;
-        if (input.value.trim()) {
-          label.classList.add('active');
-        }
-      });
-    }, 50);
     };
+  }, [visibleInputs]);
 
-  
-  // correct answer div
+  function handleSubmit(event) {
+    event.preventDefault();
 
-  function resetCorrectAnswers() {
-    const correctAnswerDivs = document.querySelectorAll("#quizForm .correct-answer").forEach((correctAnswerDiv) => {
-      correctAnswerDiv.classList.remove("visible");
-    });
-  };
+    if (submitCount === 0) {
+      validateForm(event.target);
+      setButtonText("Continue");
+      lockInputs();
+      floatAllLabels();
+      setSubmitCount(1);
+    } else if (submitCount === 1) {
+      if (verbNumber < quizData.numberOfWordsToStudy - 1) {
+        setVerbNumber((prev) => prev + 1);
+      } else {
+        onClose();
+      }
+    }
+  }
 
-  const revealCorrectAnswer = (userAnswer) => {
-    const correctAnswer = currentVerbToStudyDictionary[userAnswer.name]
+  // --- Helpers ---
 
-    const correctAnswerDiv = document.getElementById("correct-answer-"+userAnswer.name);
-    correctAnswerDiv.textContent = correctAnswer;
-    correctAnswerDiv.classList.add('visible');
-  };
-
-
-  // input container div
-
-  // Function to highlight incorrect answers
-  const highlightInputContainerOfIncorrectAnswer = (inputParentElement) => {
-    inputParentElement.classList.add('incorrect');
-  };
-
-  // Function to highlight correct answers
-  const highlightInputContainerOfCorrectAnswer = (inputParentElement) => {
-    inputParentElement.classList.add('correct');
-  };
-
-
-  // answer validation
-
-  // Logic to check if the user's answer is incorrect
-  const answerIsIncorrect = (userAnswer) => {
-    const correctAnswer = currentVerbToStudyDictionary[userAnswer.name]
-
-    return userAnswer.value.trim().toLowerCase() !== correctAnswer;
-  };
-
-  // Function to validate the form inputs
   function validateForm(form) {
     Array.from(form.elements).forEach((input) => {
-      setUserInputToNoAnswerGivenWhereBlank(input);
-      console.log("input now = ", input)
       if (input.type !== "submit") {
+        setUserInputToNoAnswerGivenWhereBlank(input);
+
         if (answerIsIncorrect(input)) {
           highlightInputContainerOfIncorrectAnswer(input.parentElement);
           revealCorrectAnswer(input);
@@ -246,21 +90,107 @@ useEffect(() => {
     });
   }
 
-  
-  // Form Section Div
-
-  function resetFormToOneSection() {
-    setVisibleInputs([inputNames[0]]);// Start with first input visible
+  function answerIsIncorrect(input) {
+    return input.value.trim().toLowerCase() !== currentVerbDict[input.name];
   }
 
+  function revealCorrectAnswer(input) {
+    const correctAnswer = currentVerbDict[input.name];
+    const correctAnswerDiv = document.getElementById("correct-answer-" + input.name);
+    if (correctAnswerDiv) {
+      correctAnswerDiv.textContent = correctAnswer;
+      correctAnswerDiv.classList.add("visible");
+    }
+  }
+
+  function lockInputs() {
+    document.querySelectorAll("#quizForm input").forEach((input) => {
+      if (input.type !== "submit") input.disabled = true;
+    });
+  }
+
+  function floatAllLabels() {
+    document.querySelectorAll(".inputArea").forEach((input) => {
+      const label = input.nextElementSibling;
+      label.classList.add("active");
+    });
+  }
+
+  function resetFloatingLabels() {
+    document.querySelectorAll(".inputArea").forEach((input) => {
+      const label = input.nextElementSibling;
+      if (!input.value.trim()) label.classList.remove("active");
+    });
+  }
+
+  function resetInputs() {
+    document.querySelectorAll("#quizForm input").forEach((input) => {
+      input.disabled = false;
+      input.parentElement.classList.remove("correct", "incorrect");
+      if (input.type !== "submit") input.value = "";
+    });
+  }
+
+  function resetInputTextColour() {
+    document.querySelectorAll("#quizForm input").forEach((input) => {
+      input.classList.remove("incorrect");
+    });
+  }
+
+  function resetCorrectAnswers() {
+    document.querySelectorAll("#quizForm .correct-answer").forEach((div) => {
+      div.classList.remove("visible");
+    });
+  }
+
+  function highlightInputContainerOfIncorrectAnswer(container) {
+    container.classList.add("incorrect");
+  }
+
+  function highlightInputContainerOfCorrectAnswer(container) {
+    container.classList.add("correct");
+  }
+
+  function highlightUsersWrongInputText(input) {
+    input.classList.add("incorrect");
+  }
+
+  function setUserInputToNoAnswerGivenWhereBlank(input) {
+    if (!input.value.trim()) {
+      input.value = "No Answer Given";
+    }
+  }
+
+  function handleInputFocus(inputName) {
+    const currentIndex = inputNames.indexOf(inputName);
+    const nextIndex = currentIndex + 1;
+
+    if (nextIndex < inputNames.length) {
+      setVisibleInputs((prev) => [...prev, inputNames[nextIndex]]);
+    }
+
+    setTimeout(() => {
+      document.querySelectorAll('.inputArea').forEach((input) => {
+        const label = input.nextElementSibling;
+        if (input.value.trim()) label.classList.add('active');
+      });
+    }, 50);
+  }
+
+  // --- Render ---
+
   return (
-    <form id="quizForm" name="quizForm">
+    <form id="quizForm" name="quizForm" onSubmit={handleSubmit}>
       <div className="form-group">
-        {mapOfSubjectData
-          .get("labelsMap")
+        {quizData.labelsMap
           .filter(({ inputName }) => visibleInputs.includes(inputName))
           .map(({ inputName, label }) => (
-            <FormSection key={inputName} inputName={inputName} label={label} onFocus={() => handleInputFocus(inputName)} />
+            <FormSection
+              key={inputName}
+              inputName={inputName}
+              label={label}
+              onFocus={() => handleInputFocus(inputName)}
+            />
           ))}
       </div>
       <input type="submit" className="submitButton" value={buttonText} />

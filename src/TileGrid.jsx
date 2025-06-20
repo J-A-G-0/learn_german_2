@@ -36,7 +36,7 @@ export default function TileGrid() {
 
     // Array of tile titles
     const tileTitles = [
-        "Present", "Perfekt", "Other Tile 2", "Other Tile 3", 
+        "present", "perfekt", "Other Tile 2", "Other Tile 3", 
         "Other Tile 4", "Other Tile 5", "Other Tile 6", "Other Tile 7",
         "Other Tile 8", "Other Tile 9", "Other Tile 10", "Other Tile 11"
     ];
